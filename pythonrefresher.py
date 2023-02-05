@@ -69,10 +69,10 @@ print(cooldictionary)
 class Dog:
     # method: func inside class
 
-    def __init__(haha, name, age, furColor):
-        haha.name = name
-        haha.age = age
-        haha.furColor = furColor
+    def __init__(self, name, age, furColor):
+        self.name = name
+        self.age = age
+        self.furColor = furColor
 
     dogInfo = 'Hey my dogs are cool'
 
