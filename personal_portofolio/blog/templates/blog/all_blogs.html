@@ -3,6 +3,8 @@
 
 <div class="container text-center">
     <h1>This is my blog</h1>
+    <!-- Pluralize tag -->
+    <h3>I've had written {{ projects.count }} blog{{ projects.count|pluralize }}</h3>
     <p>Have a good time read this bullshit</p>
     <br>
     
@@ -11,4 +13,6 @@
         <p class="text-dark">{{ project.date }}</p>
         <p>{{ project.description }}</p>
     {% endfor %}
+
+    <a href="{% url 'homepage' %}">Go to Home Page</a>
 </div>

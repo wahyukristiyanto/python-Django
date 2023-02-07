@@ -3,8 +3,11 @@ from .models import Project
 
 # Create your views here.
 def all_blogs(request):
-    projects = Project.objects.all()
-    # projects = Project.objects.order_by('-date')[:5]
+    # projects = Project.objects.all()
+
+    # [:number] is view limiter
+    projects = Project.objects.order_by('-date')[:3]
+    
     return render(request, 'blog/all_blogs.html', {'projects':projects})
 
 def details(request, blog_id):
