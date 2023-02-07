@@ -1,1 +1,5 @@
-{{ blog.title }}
+<h1>{{ blog.title }}</h1>
+
+<h2>--{{ blog.date|date:'d F o' }}</h2>
+
+{{ blog.description|safe }}

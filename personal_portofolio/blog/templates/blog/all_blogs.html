@@ -1,18 +1,25 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+{% extends 'portofolio/base.html' %}
 
-<div class="container text-center">
-    <h1>This is my blog</h1>
-    <!-- Pluralize tag -->
-    <h3>I've had written {{ projects.count }} blog{{ projects.count|pluralize }}</h3>
-    <p>Have a good time read this bullshit</p>
-    <br>
-    
-    {% for project in projects %}
-        <a href="{% url 'blog:details' project.id %}"><h4 class="text-primary">{{ project.title }}</h4></a>
-        <p class="text-dark">{{ project.date }}</p>
-        <p>{{ project.description }}</p>
-    {% endfor %}
+{% block content %}
 
-    <a href="{% url 'homepage' %}">Go to Home Page</a>
-</div>
+        <div class="container text-center">
+            <h1>This is my blog</h1>
+            <!-- Pluralize tag -->
+            <h3>I've had written {{ projects.count }} blog{{ projects.count|pluralize }}</h3>
+            <p>Have a good time read this bullshit</p>
+            <br>
+            
+            {% for project in projects %}
+                <a href="{% url 'blog:details' project.id %}"><h4 class="text-primary">{{ project.title }}</h4></a>
+                <!-- Upper & Date tag (search on google: django template date format) -->
+                <p class="text-dark">{{ project.date|date:'d F o'|upper }}</p>
+                <!-- Safe (to run html tag) and truncate character tag -->
+                <p>{{ project.description|safe|truncatechars:100 }}</p>
+                <!-- Striptags tag to ignore html tag -->
+                <!-- <p>{{ project.description|striptags|truncatechars:100 }}</p> -->
+            {% endfor %}
+
+            <a href="{% url 'homepage' %}">Go to Home Page</a>
+        </div>
+
+{% endblock %}

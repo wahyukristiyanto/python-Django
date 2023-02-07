@@ -6,3 +6,7 @@ class Project(models.Model):
     description = models.CharField(max_length=250)
     image = models.ImageField(upload_to='portofolio/images/')
     url = models.URLField(blank=True)
+
+    # no need to make migrations if it just methods
+    def __str__(self):
+        return self.title
