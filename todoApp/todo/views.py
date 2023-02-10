@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm # Signup Form
 from django.contrib.auth.models import User # to Make User
 from django.db import IntegrityError # so the username is unique
-from django.contrib.auth import login # for login
+from django.contrib.auth import login, logout # for login & logout
+
+def home(request):
+    return render(request, 'todo/home.html')
 
 # Create your views here.
 def signupuser(request):
@@ -23,3 +26,8 @@ def signupuser(request):
 
 def currenttodos(request):
     return render(request, 'todo/currenttodos.html')
+
+def logoutuser(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('home')
