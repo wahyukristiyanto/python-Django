@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm # Sig
 from django.contrib.auth.models import User # to Make User
 from django.db import IntegrityError # so the username is unique
 from django.contrib.auth import login, logout, authenticate # for login & logout
+from .forms import TodoForm # import forms.py
 
 def home(request):
     return render(request, 'todo/home.html')
@@ -24,9 +25,6 @@ def signupuser(request):
         else:
             return render(request, 'todo/signupuser.html', {'form':UserCreationForm(), 'error':'Passwords didnt match!'})
 
-def currenttodos(request):
-    return render(request, 'todo/currenttodos.html')
-
 def logoutuser(request):
     if request.method == 'POST':
         logout(request)
@@ -43,3 +41,20 @@ def signinuser(request):
         else:
             login(request, user) # login process
             return redirect('currenttodos') # import redirect first
+
+def currenttodos(request):
+    return render(request, 'todo/currenttodos.html')
+
+def createtodos(request):
+    if request.method == 'GET':
+        return render(request, 'todo/createtodo.html', {'form':TodoForm()})
+    else:
+        try:
+            form = TodoForm(request.POST)
+            # commit=False is to not to save to database, remove it to save data to database
+            newTodo = form.save(commit=False)
+            newTodo.user = request.user # get the user
+            newTodo.save() # then you can save it
+            return redirect('currenttodos')
+        except ValueError:
+            return render(request, 'todo/createtodo.html', {'form':TodoForm(), 'error':'Bad data passed in! Try again Sir!'})
