@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm # Signup & Signin Form
 from django.contrib.auth.models import User # to Make User
 from django.db import IntegrityError # so the username is unique
 from django.contrib.auth import login, logout, authenticate # for login & logout
 from .forms import TodoForm # import forms.py
 from .models import Todo # import Todo Model to get the data of Todo
+from django.utils import timezone
 
 def home(request):
     return render(request, 'todo/home.html')
@@ -43,10 +44,6 @@ def signinuser(request):
             login(request, user) # login process
             return redirect('currenttodos') # import redirect first
 
-def currenttodos(request):
-    todos = Todo.objects.filter(user=request.user, dateCompleted__isnull=True) # get user to do data from Todo Models
-    return render(request, 'todo/currenttodos.html', {'todos':todos})
-
 def createtodos(request):
     if request.method == 'GET':
         return render(request, 'todo/createtodo.html', {'form':TodoForm()})
@@ -60,3 +57,33 @@ def createtodos(request):
             return redirect('currenttodos')
         except ValueError:
             return render(request, 'todo/createtodo.html', {'form':TodoForm(), 'error':'Bad data passed in! Try again Sir!'})
+
+def currenttodos(request):
+    todos = Todo.objects.filter(user=request.user, dateCompleted__isnull=True) # get user to do data from Todo Models
+    return render(request, 'todo/currenttodos.html', {'todos':todos})
+
+def viewtodo(request, todo_pk):
+    todo = get_object_or_404(Todo, pk=todo_pk, user=request.user) # got this from portofolio blog hehe
+    if request.method == 'GET': # to view the detail
+        form = TodoForm(instance=todo)
+        return render(request, 'todo/viewtodo.html', {'todo':todo, 'form':form})
+    else: # if any update
+        try:
+            form = TodoForm(request.POST, instance=todo)
+            form.save()
+            return redirect('currenttodos')
+        except ValueError:
+            return render(request, 'todo/viewtodo.html', {'todo':todo, 'form':form, 'error':'Bad data passed in! Try again Sir!'})
+
+def completetodo(request, todo_pk):
+    todo = get_object_or_404(Todo, pk=todo_pk, user=request.user)
+    if request.method == 'POST':
+        todo.dateCompleted = timezone.now()
+        todo.save()
+        return redirect('currenttodos')
+    
+def deletetodo(request, todo_pk):
+    todo = get_object_or_404(Todo, pk=todo_pk, user=request.user)
+    if request.method == 'POST':
+        todo.delete()
+        return redirect('currenttodos')
