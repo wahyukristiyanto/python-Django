@@ -1,0 +1,21 @@
+{% extends 'todo/base.html' %}
+
+{% block content %}
+    <h1>Complete</h1>
+
+    <ul>
+        {% for todo in todos %}
+            <li>
+                {% if todo.important %}<b>{% endif %}
+                    {{ todo.title }}
+                {% if todo.important %}</b>{% endif %}
+
+                {% if todo.memo %} - {{ todo.memo }}{% endif %}
+                {{ todo.dateCompleted|date:'d F o' }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+<!-- to make it safe -->
+{% csrf_token %}
