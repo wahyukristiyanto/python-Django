@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm # Signup Form
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm # Signup & Signin Form
 from django.contrib.auth.models import User # to Make User
 from django.db import IntegrityError # so the username is unique
-from django.contrib.auth import login, logout # for login & logout
+from django.contrib.auth import login, logout, authenticate # for login & logout
 
 def home(request):
     return render(request, 'todo/home.html')
@@ -31,3 +31,15 @@ def logoutuser(request):
     if request.method == 'POST':
         logout(request)
         return redirect('home')
+
+def signinuser(request):
+    if request.method == 'GET':
+        # Sign In Form from Django
+        return render(request, 'todo/signinuser.html', {'form':AuthenticationForm()})
+    else:
+        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        if user is None:
+            return render(request, 'todo/signinuser.html', {'form':AuthenticationForm(), 'error':'User not found!'})
+        else:
+            login(request, user) # login process
+            return redirect('currenttodos') # import redirect first

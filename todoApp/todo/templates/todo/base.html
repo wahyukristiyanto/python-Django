@@ -5,8 +5,8 @@
         {% csrf_token %}
     </form>
 {% else %}
-    <a href="#">Signup</a>
-    <a href="#">Signin</a>
+    <a href="{% url 'signup' %}">Signup</a>
+    <a href="{% url 'signin' %}">Signin</a>
 {% endif %}
 
 {% block content %}{% endblock %}
