@@ -4,6 +4,7 @@ from django.contrib.auth.models import User # to Make User
 from django.db import IntegrityError # so the username is unique
 from django.contrib.auth import login, logout, authenticate # for login & logout
 from .forms import TodoForm # import forms.py
+from .models import Todo # import Todo Model to get the data of Todo
 
 def home(request):
     return render(request, 'todo/home.html')
@@ -43,7 +44,8 @@ def signinuser(request):
             return redirect('currenttodos') # import redirect first
 
 def currenttodos(request):
-    return render(request, 'todo/currenttodos.html')
+    todos = Todo.objects.filter(user=request.user, dateCompleted__isnull=True) # get user to do data from Todo Models
+    return render(request, 'todo/currenttodos.html', {'todos':todos})
 
 def createtodos(request):
     if request.method == 'GET':
